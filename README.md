@@ -1,3 +1,3 @@
 # StatsdClient
 
-A client for [statsd](https://github.com/etsy/statsd) daemons.
+A client for [StatsD](https://github.com/etsy/statsd) servers.
