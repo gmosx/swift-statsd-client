@@ -24,8 +24,8 @@ Download and setup the reference [StatsD server](https://github.com/etsy/statsd)
 
 ```
 {
-  port: 8125
-, backends: [ "./backends/console" ]
+    port: 8125,
+    backends: [ "./backends/console" ]
 }
 ```
 
