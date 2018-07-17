@@ -42,12 +42,16 @@ public class StatsdClient {
     
     // MARK: Counters
     
-    public func increment(counter bucket: String, by amount: Int = 1, rate: Double? = nil) throws {
+    public func counterMetric(bucket: String, amount: Int = 1, rate: Double? = nil) -> String {
         if let rate = rate {
-            try send(payload: "\(bucket):\(amount)|c|@\(rate)")
+            return "\(bucket):\(amount)|c|@\(rate)"
         } else {
-            try send(payload: "\(bucket):\(amount)|c")
+            return "\(bucket):\(amount)|c"
         }
+    }
+    
+    public func increment(counter bucket: String, by amount: Int = 1, rate: Double? = nil) throws {
+        try send(payload: counterMetric(bucket: bucket, amount: amount, rate: rate))
     }
 
     public func decrement(counter bucket: String, by amount: Int = 1, rate: Double? = nil) throws {
@@ -56,45 +60,51 @@ public class StatsdClient {
 
     // MARK: Timers
     
-    public func timing(timer bucket: String, ms durationInMs: Int, rate: Double? = nil) throws {
+    public func timerMetric(bucket: String, durationInMs: Int, rate: Double? = nil) -> String {
         if let rate = rate {
-            try send(payload: "\(bucket):\(durationInMs)|ms|@\(rate)")
+            return "\(bucket):\(durationInMs)|ms|@\(rate)"
         } else {
-            try send(payload: "\(bucket):\(durationInMs)|ms")
+            return "\(bucket):\(durationInMs)|ms"
         }
+    }
+    
+    public func timing(timer bucket: String, ms durationInMs: Int, rate: Double? = nil) throws {
+        try send(payload: timerMetric(bucket: bucket, durationInMs: durationInMs, rate: rate))
     }
 
     // MARK: Gauges
     
+    public func gaugeMetric(bucket: String, value: Int) -> String {
+        return "\(bucket):\(value)|g"
+    }
+    
+    public func gaugeMetric(bucket: String, value: Double) -> String {
+        return "\(bucket):\(value)|g"
+    }
+
     public func update(gauge bucket: String, to value: Int) throws {
-        try send(payload: "\(bucket):\(value)|g")
+        try send(payload: gaugeMetric(bucket: bucket, value: value))
     }
     
     public func update(gauge bucket: String, by delta: Int) throws {
-        try send(payload: "\(bucket):\(delta)|g")
+        try send(payload: gaugeMetric(bucket: bucket, value: delta))
     }
 
     public func update(gauge bucket: String, to value: Double) throws {
-        try send(payload: "\(bucket):\(value)|g")
+        try send(payload: gaugeMetric(bucket: bucket, value: value))
     }
     
     public func update(gauge bucket: String, by delta: Double) throws {
-        try send(payload: "\(bucket):\(delta)|g")
+        try send(payload: gaugeMetric(bucket: bucket, value: delta))
     }
     
     // MARK: Sets
     
+    public func setMetric(bucket: String, value: CustomStringConvertible) -> String {
+        return "\(bucket):\(value)|s"
+    }
+
     public func insert(set bucket: String, value: CustomStringConvertible) throws {
-        try send(payload: "\(bucket):\(value)|s")
+        try send(payload: setMetric(bucket: bucket, value: value))
     }
 }
-
-// These lines would connect to the UDP socket vs sending the packets into the ether.
-// The advantage being that if an ICMP packet came back about the port not being opened
-// you'd be warned about it
-//        channel.connect(to: remoteAddress).whenComplete {
-//            var buffer = channel.allocator.buffer(capacity: payload.utf8.count)
-//            buffer.write(string: payload)
-//            channel.writeAndFlush(buffer, promise: nil)
-//        }
-// try channel.closeFuture.wait()
