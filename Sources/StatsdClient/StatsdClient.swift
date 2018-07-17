@@ -1,12 +1,6 @@
 import NIO
 
-// TODO: support both UDP and TCP
-// TODO: automatically switch between UDP and TCP
-// TODO: add support for logging
-
 public let defaultStatsdPort = 8125
-
-let group = MultiThreadedEventLoopGroup(numberOfThreads: 1)
 
 public class StatsdClient {
     public let host: String
@@ -20,7 +14,7 @@ public class StatsdClient {
     }
 
     public convenience init(host: String = "127.0.0.1", port: Int = defaultStatsdPort, eventLoopGroup: EventLoopGroup) throws {
-        let bootstrap = DatagramBootstrap(group: group)
+        let bootstrap = DatagramBootstrap(group: eventLoopGroup)
             .channelOption(
                 ChannelOptions.socket(SocketOptionLevel(SOL_SOCKET), SO_REUSEADDR),
                 value: 1
