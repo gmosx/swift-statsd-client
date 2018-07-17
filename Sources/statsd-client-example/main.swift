@@ -4,9 +4,6 @@ import StatsdClient
 do {
     let group = MultiThreadedEventLoopGroup(numberOfThreads: 1)
 
-    let bootstrap = DatagramBootstrap(group: group)
-        .channelOption(ChannelOptions.socket(SocketOptionLevel(SOL_SOCKET), SO_REUSEADDR), value: 1)
-
     defer {
         do {
             try group.syncShutdownGracefully()
@@ -15,25 +12,13 @@ do {
         }
     }
 
-    let channel = try bootstrap.bind(host: "0.0.0.0", port: 0).wait()
-
-    let statsdClient = StatsdClient(host: "127.0.0.1", channel: channel)
+    let statsdClient = try StatsdClient(host: "127.0.0.1", eventLoopGroup: group)
 
     for _ in 0..<10 {
         try statsdClient.increment(counter: "foo", by: 2)
     }
 
-    _ = channel.close()
-
-    // These lines would connect to the UDP socket vs sending the packets into the ether.
-    // The advantage being that if an ICMP packet came back about the port not being opened
-    // you'd be warned about it
-    //        channel.connect(to: remoteAddress).whenComplete {
-    //            var buffer = channel.allocator.buffer(capacity: payload.utf8.count)
-    //            buffer.write(string: payload)
-    //            channel.writeAndFlush(buffer, promise: nil)
-    //        }
-    // try channel.closeFuture.wait()
+    _ = statsdClient.disconnect()
 } catch {
     print(error)
 }
