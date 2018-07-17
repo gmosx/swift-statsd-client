@@ -40,6 +40,8 @@ public class StatsdClient {
         channel.writeAndFlush(envelope, promise: nil)
     }
     
+    // MARK: Counters
+    
     public func increment(counter bucket: String, by amount: Int = 1, rate: Double? = nil) throws {
         if let rate = rate {
             try send(payload: "\(bucket):\(amount)|c|@\(rate)")
@@ -50,6 +52,34 @@ public class StatsdClient {
 
     public func decrement(counter bucket: String, by amount: Int = 1, rate: Double? = nil) throws {
         try increment(counter: bucket, by: amount, rate: rate)
+    }
+
+    // MARK: Timers
+    
+    public func timing(timer bucket: String, ms durationInMs: Int, rate: Double? = nil) throws {
+        if let rate = rate {
+            try send(payload: "\(bucket):\(durationInMs)|ms|@\(rate)")
+        } else {
+            try send(payload: "\(bucket):\(durationInMs)|ms")
+        }
+    }
+
+    // MARK: Gauges
+    
+    public func update(gauge bucket: String, to value: Int) throws {
+        try send(payload: "\(bucket):\(value)|g")
+    }
+    
+    public func update(gauge bucket: String, by delta: Int) throws {
+        try send(payload: "\(bucket):\(delta)|g")
+    }
+
+    public func update(gauge bucket: String, to value: Double) throws {
+        try send(payload: "\(bucket):\(value)|g")
+    }
+    
+    public func update(gauge bucket: String, by delta: Double) throws {
+        try send(payload: "\(bucket):\(delta)|g")
     }
 }
 
