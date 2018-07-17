@@ -7,14 +7,6 @@ A client for [StatsD](https://github.com/etsy/statsd) servers.
 ```
 let group = MultiThreadedEventLoopGroup(numberOfThreads: 1)
 
-defer {
-    do {
-        try group.syncShutdownGracefully()
-    } catch {
-        print(error)
-    }
-}
-
 let statsdClient = try StatsdClient(host: "127.0.0.1", eventLoopGroup: group)
 
 try statsdClient.increment(counter: "foo", by: 2, rate: 0.1)
@@ -28,9 +20,7 @@ try statsdClient.insert(set: "unique_users", value: "3213F1")
 
 ## Evaluation
 
-Download and setup the reference [StatsD server](https://github.com/etsy/statsd)
-For evaluation you can dump metrics the `console` backend by using the following
-config:
+Download and setup the reference [StatsD server](https://github.com/etsy/statsd). For evaluation you can dump metrics the `console` backend by using the following config:
 
 ```
 {
