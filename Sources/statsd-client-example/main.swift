@@ -20,7 +20,7 @@ do {
     let statsdClient = StatsdClient(host: "127.0.0.1", channel: channel)
 
     for _ in 0..<10 {
-        try statsdClient.send(payload: "foo:1|c")
+        try statsdClient.increment(counter: "foo", by: 2)
     }
 
     _ = channel.close()

@@ -31,5 +31,13 @@ public class StatsdClient {
         let envelope = AddressedEnvelope(remoteAddress: remoteAddress, data: buffer)
         channel.writeAndFlush(envelope, promise: nil)
     }
+    
+    public func increment(counter counterName: String, by amount: Int = 1) throws {
+        try send(payload: "\(counterName):\(amount)|c")
+    }
+
+    public func decrement(counter counterName: String, by amount: Int = 1) throws {
+        try send(payload: "\(counterName):\(-amount)|c")
+    }
 }
 
