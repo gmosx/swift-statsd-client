@@ -19,6 +19,9 @@ do {
         try statsdClient.timing(timer: "random_timer", ms: 12)
         try statsdClient.update(gauge: "gas_tank", to: 0.5)
         try statsdClient.update(gauge: "gas_tank", by: -0.2)
+        try statsdClient.insert(set: "unique_users", value: "3213FA")
+        try statsdClient.insert(set: "unique_users", value: "3213FA")
+        try statsdClient.insert(set: "unique_users", value: "3213F1")
     }
 
     _ = statsdClient.disconnect()

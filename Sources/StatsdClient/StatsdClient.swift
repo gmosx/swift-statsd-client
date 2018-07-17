@@ -81,6 +81,12 @@ public class StatsdClient {
     public func update(gauge bucket: String, by delta: Double) throws {
         try send(payload: "\(bucket):\(delta)|g")
     }
+    
+    // MARK: Sets
+    
+    public func insert(set bucket: String, value: CustomStringConvertible) throws {
+        try send(payload: "\(bucket):\(value)|s")
+    }
 }
 
 // These lines would connect to the UDP socket vs sending the packets into the ether.
