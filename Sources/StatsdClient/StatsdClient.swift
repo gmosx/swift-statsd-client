@@ -46,12 +46,16 @@ public class StatsdClient {
         channel.writeAndFlush(envelope, promise: nil)
     }
     
-    public func increment(counter counterName: String, by amount: Int = 1) throws {
-        try send(payload: "\(counterName):\(amount)|c")
+    public func increment(counter bucket: String, by amount: Int = 1, rate: Double? = nil) throws {
+        if let rate = rate {
+            try send(payload: "\(bucket):\(amount)|c|@\(rate)")
+        } else {
+            try send(payload: "\(bucket):\(amount)|c")
+        }
     }
 
-    public func decrement(counter counterName: String, by amount: Int = 1) throws {
-        try send(payload: "\(counterName):\(-amount)|c")
+    public func decrement(counter bucket: String, by amount: Int = 1, rate: Double? = nil) throws {
+        try increment(counter: bucket, by: amount, rate: rate)
     }
 }
 

@@ -15,7 +15,7 @@ do {
     let statsdClient = try StatsdClient(host: "127.0.0.1", eventLoopGroup: group)
 
     for _ in 0..<10 {
-        try statsdClient.increment(counter: "foo", by: 2)
+        try statsdClient.increment(counter: "foo", by: 2, rate: 0.1)
     }
 
     _ = statsdClient.disconnect()
