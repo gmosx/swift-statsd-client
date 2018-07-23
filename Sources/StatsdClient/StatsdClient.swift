@@ -2,6 +2,8 @@ import NIO
 
 public let defaultStatsdPort = 8125
 
+fileprivate let onDemandSharedEventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 1)
+
 public class StatsdClient {
     public let host: String
     public let port: Int
@@ -13,8 +15,12 @@ public class StatsdClient {
         self.channel = channel
     }
 
-    public convenience init(host: String = "127.0.0.1", port: Int = defaultStatsdPort, eventLoopGroup: EventLoopGroup) throws {
-        let bootstrap = DatagramBootstrap(group: eventLoopGroup)
+    public convenience init(host: String = "127.0.0.1", port: Int = defaultStatsdPort, eventLoopGroup: EventLoopGroup? = nil) throws {
+        let group = eventLoopGroup
+            ?? MultiThreadedEventLoopGroup.currentEventLoop
+            ?? onDemandSharedEventLoopGroup
+
+        let bootstrap = DatagramBootstrap(group: group)
             .channelOption(
                 ChannelOptions.socket(SocketOptionLevel(SOL_SOCKET), SO_REUSEADDR),
                 value: 1
