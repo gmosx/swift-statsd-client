@@ -9,7 +9,6 @@ final class StatsdClientTests: XCTestCase {
         XCTAssertEqual(StatsdClient().text, "Hello, World!")
     }
 
-
     static var allTests = [
         ("testExample", testExample),
     ]
